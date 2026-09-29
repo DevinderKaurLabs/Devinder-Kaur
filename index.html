@@ -273,6 +273,51 @@
   .writing-card .btn-line:hover { background: var(--sky); color: var(--navy); }
   @media (max-width: 860px) { .pair { grid-template-columns: 1fr; gap: 48px; } }
 
+  /* Auto-scrolling showcase: moves right to left, pauses on hover */
+  .posts { margin-top: 88px; }
+  .marquee {
+    overflow: hidden; padding: 28px 0 8px;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+            mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  }
+  .marquee-track {
+    display: flex; gap: 22px; width: max-content;
+    animation: marquee var(--duration, 40s) linear infinite;
+  }
+  .marquee:hover .marquee-track,
+  .marquee:focus-within .marquee-track { animation-play-state: paused; }
+  @keyframes marquee { to { transform: translateX(calc(-50% - 11px)); } }
+
+  .show-card {
+    width: 340px; flex: none; display: flex; flex-direction: column;
+    background: var(--white); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden;
+    text-decoration: none; color: var(--navy);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .show-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(47, 65, 86, 0.16); }
+  .show-media { position: relative; aspect-ratio: 16 / 10; background: var(--navy); overflow: hidden; }
+  .show-media img, .show-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .show-media.blank { display: grid; place-items: center; color: var(--sky); background: linear-gradient(135deg, var(--navy), var(--teal)); }
+  .show-media.blank svg { width: 46px; height: 46px; opacity: 0.85; }
+  .show-play {
+    position: absolute; left: 14px; bottom: 14px; width: 40px; height: 40px; border-radius: 999px;
+    display: grid; place-items: center; background: rgba(255, 255, 255, 0.9); color: var(--navy); font-size: 0.9rem;
+  }
+  .show-body { padding: 18px 20px 20px; display: flex; flex-direction: column; flex: 1; }
+  .show-tag { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal-ink); }
+  .show-title { font-family: var(--serif); font-size: 1.3rem; line-height: 1.2; margin: 6px 0 8px; }
+  .show-text { font-size: 0.95rem; color: var(--teal-ink); margin: 0 0 14px; }
+  .show-link { margin-top: auto; font-weight: 700; }
+
+  @media (max-width: 600px) {
+    .posts { margin-top: 64px; }
+    .show-card { width: 78vw; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee { overflow-x: auto; }
+    .marquee-track { animation: none; }
+  }
+
 
   /* Extra photos (photo-2, photo-3, photo-4). Each one hides itself if the file is missing. */
   .photo-missing .optional-photo, .optional-photo.photo-missing { display: none !important; }
@@ -387,20 +432,60 @@
       <div class="project-grid">
       <article class="project">
         <div>
-          <h3>Career Intelligence Agent</h3>
-          <p class="project-summary">A multi-agent career counsellor that turns someone's experience, skills and goals into a personalised six-month plan.</p>
-          <ul class="tags"><li>Python</li><li>FastAPI</li><li>Railway</li><li>Multi-agent</li></ul>
+          <h3>GA4 Marketing Automation</h3>
+          <p class="project-summary">Turns raw GA4 and campaign data into a weekly marketing report and the actions that follow it, without anyone opening a dashboard.</p>
+          <ul class="tags"><li>GA4</li><li>BigQuery</li><li>Python</li><li>n8n</li></ul>
         </div>
         <div>
           <dl>
             <dt>What I built</dt>
-            <dd>A planner, seven specialist agents (profile, market, gap, leverage, paths, action, insight) and a critic that reviews the output in a loop.</dd>
-            <dt>Why it's efficient</dt>
-            <dd>Only one agent reads the full resume; the rest work from a compact summary. The loop stops at 85% confidence, four rounds or <span class="result">5,000 tokens per run</span>.</dd>
+            <dd>A scheduled pipeline that pulls GA4 and channel data into BigQuery, checks each campaign against its target, and writes a plain-language summary of what moved and what to do next.</dd>
+            <dt>Why it matters</dt>
+            <dd>Marketing teams stop waiting on manual reporting and get the same read on performance every week, in the same format.</dd>
           </dl>
           <div class="project-links link-group">
-            <a class="text-link" data-link="careerAgentDemo">Try the live demo</a>
-            <a class="text-link" data-link="careerAgentCode">View code on GitHub</a>
+            <a class="text-link" data-link="ga4Code">View code on GitHub</a>
+            <a class="text-link" data-link="ga4Live">See it running</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project">
+        <div>
+          <h3>Competitor Campaign Intelligence</h3>
+          <p class="project-summary">Watches what competing retailers are running each week and turns it into a campaign brief with a clear gap to attack.</p>
+          <ul class="tags"><li>n8n</li><li>Gemini</li><li>Google Sheets</li><li>Automation</li></ul>
+        </div>
+        <div>
+          <dl>
+            <dt>What I built</dt>
+            <dd>A scheduled workflow that searches for live competitor campaigns across the category, summarises what each one promises, and writes the findings into a shared sheet the team already uses.</dd>
+            <dt>Why it matters</dt>
+            <dd>It proposes an angle the competitor set is not covering, so a brief starts from evidence in the market rather than a blank page.</dd>
+          </dl>
+          <div class="project-links link-group">
+            <a class="text-link" data-link="competitorCode">View code on GitHub</a>
+            <a class="text-link" data-link="competitorArticle">Read the write-up</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project">
+        <div>
+          <h3>Spotify Sentiment Intelligence</h3>
+          <p class="project-summary">Turns app-store reviews into a themed escalation queue, so product and support know which unhappy customers to answer first.</p>
+          <ul class="tags"><li>Python</li><li>LLM classification</li><li>Airtable</li><li>NPS</li></ul>
+        </div>
+        <div>
+          <dl>
+            <dt>What I built</dt>
+            <dd>A review taxonomy built with a large model, then 401 Spotify reviews classified one by one for theme, sentiment band and urgency, feeding a live dashboard with an escalation queue.</dd>
+            <dt>Result</dt>
+            <dd>37% of reviews needed a human response, and <span class="result">playback reliability drove 37.7% of all detractors</span>, which set the fix-it order.</dd>
+          </dl>
+          <div class="project-links link-group">
+            <a class="text-link" data-link="sentimentCode">View code on GitHub</a>
+            <a class="text-link" data-link="sentimentArticle">Read the write-up</a>
           </div>
         </div>
       </article>
@@ -465,42 +550,7 @@
         </div>
       </article>
 
-      <article class="project">
-        <div>
-          <h3>ATS Match Checker</h3>
-          <p class="project-summary">Scores a resume against a job description for both LinkedIn Easy Apply and company career sites, then exports a tailored Word document.</p>
-          <ul class="tags"><li>Python</li><li>Deterministic scoring</li><li>Zero API cost</li></ul>
-        </div>
-        <div>
-          <dl>
-            <dt>What I built</dt>
-            <dd>Keyword gap detection, live re-scoring as keywords are added, and a clean ATS-friendly document export.</dd>
-            <dt>Why it's free to run</dt>
-            <dd><span class="result">No language model in the loop</span>, so every score is repeatable and costs nothing.</dd>
-          </dl>
-          <div class="project-links link-group">
-            <a class="text-link" data-link="atsCode">View code on GitHub</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="project">
-        <div>
-          <h3>Demystified</h3>
-          <p class="project-summary">An app that explains AI buzzwords in plain language for busy professionals.</p>
-          <ul class="tags"><li>Google AI Studio</li><li>Gemini</li></ul>
-        </div>
-        <div>
-          <dl>
-            <dt>What it does</dt>
-            <dd>Type in a term you keep hearing and get a clear explanation of what it means and why it matters at work.</dd>
-          </dl>
-          <div class="project-links link-group">
-            <a class="text-link" data-link="demystifiedLive">Try the app</a>
-          </div>
-        </div>
-      </article>
-      </div>
+     </div>
     </div>
   </section>
   </div>
@@ -583,6 +633,16 @@
         <a class="btn btn-line" data-link="substack">Read on Substack</a>
       </div>
     </div>
+
+    <div class="posts" id="posts" hidden>
+      <div class="wrap">
+        <h2>Builds, demos and talks</h2>
+        <p class="section-intro">Hover to pause. Click any card to open the full post on LinkedIn.</p>
+      </div>
+      <div class="marquee" id="marquee">
+        <div class="marquee-track" id="marqueeTrack"></div>
+      </div>
+    </div>
   </section>
 
   <section class="contact" id="contact" aria-labelledby="contact-title">
@@ -626,17 +686,41 @@ const LINKS = {
   github:           "https://github.com/BetterThanBusy",
   resume:           "assets/Resume-Devinder%20Kaur%20Padam.pdf",
 
-  careerAgentDemo:  "",
-  careerAgentCode:  "https://github.com/BetterThanBusy/career-intelligence-agent-v4",
+  competitorCode:      "",
+  competitorArticle:   "",
+  sentimentCode:       "https://github.com/BetterThanBusy/Sentiment-Analysis",
+  sentimentArticle:    "",
+  ga4Code:          "",
+  ga4Live:          "",
   cardAgentLive:    "https://uae-credit-card-intelligence.onrender.com",
   cardAgentCode:    "https://github.com/BetterThanBusy/uae-credit-card-intelligence",
   cieCode:          "https://github.com/BetterThanBusy/Customer_Lifetime_Value",
   cieArticle:       "https://substack.com/home/post/p-215028003",
   pdeCode:          "https://github.com/BetterThanBusy/Customer_Purchase_Decision_Engine",
-  pdeArticle:       "https://substack.com/home/post/p-214851420",
-  atsCode:          "https://github.com/BetterThanBusy/ATS-Generator",
-  demystifiedLive:  "https://demystified.ai.studio"
+  pdeArticle:       "https://substack.com/home/post/p-214851420"
 };
+
+/* ==============================================================
+   YOUR SHOWCASE CARDS (the moving strip in the Speaking section)
+   Copy one { ... } block per post. Fill in:
+     tag    short label: "Demo", "Build", "Talk", "Workshop"
+     title  the headline on the card
+     text   one or two lines about it
+     video  a video file in assets/videos (optional)
+     image  a picture in assets/posts, also used as the video's cover (optional)
+     link   the LinkedIn post the card opens
+   Leave the list empty [] and the whole strip stays hidden.
+   ============================================================== */
+const SHOWCASE = [
+  {
+    tag:   "Build",
+    title: "Customer insights with AI",
+    text:  "How I turn customer data into decisions a marketing team can act on.",
+    video: "",
+    image: "",
+    link:  "https://www.linkedin.com/posts/devinder-kaur-padam_customerinsights-ai-dataanalytics-activity-7289915101145362432-i10l"
+  },
+];
 
 /* OPTIONAL: add jobs here and an Experience section appears.
    Leave the list empty [] and the section stays hidden. Example:
@@ -683,6 +767,50 @@ const EXPERIENCE = [
     });
     document.getElementById("experience").hidden = false;
   }
+
+  // Showcase strip: builds the cards, doubles them for a seamless loop.
+  (function () {
+    const items = SHOWCASE.filter(function (x) { return x && x.link && x.title; });
+    if (!items.length) return;
+    const track = document.getElementById("marqueeTrack");
+
+    function makeCard(item, copy) {
+      const a = document.createElement("a");
+      a.className = "show-card";
+      a.href = item.link; a.target = "_blank"; a.rel = "noopener noreferrer";
+      if (copy) { a.setAttribute("aria-hidden", "true"); a.tabIndex = -1; }
+      let media = "";
+      if (item.video) {
+        media = '<div class="show-media"><video muted loop playsinline preload="metadata"' +
+                (item.image ? ' poster="' + item.image + '"' : "") + '><source src="' + item.video + '"></video>' +
+                '<span class="show-play" aria-hidden="true">&#9654;</span></div>';
+      } else if (item.image) {
+        media = '<div class="show-media"><img loading="lazy" alt="" src="' + item.image + '"></div>';
+      } else {
+        media = '<div class="show-media blank"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></div>';
+      }
+      a.innerHTML = media + '<div class="show-body"><span class="show-tag"></span><h3 class="show-title"></h3>' +
+        '<p class="show-text"></p><span class="show-link">Watch on LinkedIn &#8599;</span></div>';
+      a.querySelector(".show-tag").textContent = item.tag || "";
+      a.querySelector(".show-title").textContent = item.title;
+      a.querySelector(".show-text").textContent = item.text || "";
+      if (!item.video) a.querySelector(".show-link").innerHTML = "Read on LinkedIn &#8599;";
+      const v = a.querySelector("video");
+      if (v) {
+        a.addEventListener("mouseenter", function () { v.play().catch(function () {}); });
+        a.addEventListener("mouseleave", function () { v.pause(); });
+      }
+      return a;
+    }
+
+    // Repeat the set until it is wider than the screen, then double it for the loop.
+    let set = items.slice();
+    while (set.length < 6) set = set.concat(items);
+    set.forEach(function (x) { track.appendChild(makeCard(x, false)); });
+    set.forEach(function (x) { track.appendChild(makeCard(x, true)); });
+    track.style.setProperty("--duration", (set.length * 7) + "s");   // about 7 seconds per card
+    document.getElementById("posts").hidden = false;
+  })();
 
   document.getElementById("year").textContent = new Date().getFullYear();
 })();

@@ -234,8 +234,7 @@
   /* Selected work: one row that drifts right to left, and stops on hover */
   .work-marquee {
     margin-top: 40px; overflow: hidden;
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 2%, #000 98%, transparent);
-            mask-image: linear-gradient(to right, transparent, #000 2%, #000 98%, transparent);
+    width: 100vw; margin-left: calc(50% - 50vw);   /* full width, no side margins */
   }
   .project-grid {
     display: flex; gap: 28px; width: max-content; align-items: stretch; padding: 4px 2px 8px;
@@ -264,12 +263,6 @@
   .project-links { display: flex; flex-wrap: wrap; gap: 20px; }
   .result { background: var(--sky); padding: 2px 6px; border-radius: 3px; }
   @media (max-width: 860px) { .project { width: 80vw; padding: 26px; } }
-  /* Touch screens have no hover, so the row becomes a swipe strip instead */
-  @media (hover: none), (prefers-reduced-motion: reduce) {
-    .work-marquee { overflow-x: auto; scroll-snap-type: x mandatory; }
-    .project-grid { animation: none; }
-    .project { scroll-snap-align: start; }
-  }
 
   /* Experience (optional, filled from config) */
   .timeline { list-style: none; padding: 0; margin: 40px 0 0; }
@@ -375,7 +368,7 @@
   footer { padding: 32px 0; font-size: 0.9rem; color: var(--teal-ink); }
   footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
 
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } .project-grid { animation-name: workscroll !important; } }
 </style>
 </head>
 <body>

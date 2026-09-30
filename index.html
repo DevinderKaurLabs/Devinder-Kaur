@@ -231,11 +231,21 @@
 
   /* Work: translucent cards floating on the shaded canvas */
   .work { background: transparent; padding-top: 24px; }
-  .project-grid {
-    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 28px; margin-top: 40px; align-items: stretch;
+  /* Selected work: one row that drifts right to left, and stops on hover */
+  .work-marquee {
+    margin-top: 40px; overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 2%, #000 98%, transparent);
+            mask-image: linear-gradient(to right, transparent, #000 2%, #000 98%, transparent);
   }
+  .project-grid {
+    display: flex; gap: 28px; width: max-content; align-items: stretch; padding: 4px 2px 8px;
+    animation: workscroll var(--duration, 120s) linear infinite;
+  }
+  .work-marquee:hover .project-grid,
+  .work-marquee:focus-within .project-grid { animation-play-state: paused; }
+  @keyframes workscroll { to { transform: translateX(calc(-50% - 14px)); } }
   .project {
+    width: 430px; flex: none;
     display: flex; flex-direction: column;
     background: rgba(245, 239, 235, 0.88);
     border: 1px solid rgba(255, 255, 255, 0.35);
@@ -253,7 +263,13 @@
   .project dd { margin: 2px 0 18px; }
   .project-links { display: flex; flex-wrap: wrap; gap: 20px; }
   .result { background: var(--sky); padding: 2px 6px; border-radius: 3px; }
-  @media (max-width: 860px) { .project-grid { grid-template-columns: 1fr; gap: 20px; } .project { padding: 26px; } }
+  @media (max-width: 860px) { .project { width: 80vw; padding: 26px; } }
+  /* Touch screens have no hover, so the row becomes a swipe strip instead */
+  @media (hover: none), (prefers-reduced-motion: reduce) {
+    .work-marquee { overflow-x: auto; scroll-snap-type: x mandatory; }
+    .project-grid { animation: none; }
+    .project { scroll-snap-align: start; }
+  }
 
   /* Experience (optional, filled from config) */
   .timeline { list-style: none; padding: 0; margin: 40px 0 0; }
@@ -429,7 +445,8 @@
       <h2 id="work-title">Selected work</h2>
       <p class="section-intro">Working systems with code you can read. Each one starts from a business question, not a model.</p>
 
-      <div class="project-grid">
+      <div class="work-marquee" id="workMarquee">
+      <div class="project-grid" id="projectTrack">
       <article class="project">
         <div>
           <h3>Churn Predictor and Retention Strategy</h3>
@@ -569,7 +586,7 @@
           </div>
         </div>
       </article>
-
+      </div>
      </div>
     </div>
   </section>
@@ -829,6 +846,21 @@ const EXPERIENCE = [
     set.forEach(function (x) { track.appendChild(makeCard(x, true)); });
     track.style.setProperty("--duration", (set.length * 7) + "s");   // about 7 seconds per card
     document.getElementById("posts").hidden = false;
+  })();
+
+  // Selected work: clone the cards once so the row can loop without a gap.
+  (function () {
+    const track = document.getElementById("projectTrack");
+    if (!track) return;
+    const cards = Array.prototype.slice.call(track.children);
+    if (!cards.length) return;
+    cards.forEach(function (card) {
+      const copy = card.cloneNode(true);
+      copy.setAttribute("aria-hidden", "true");
+      copy.querySelectorAll("a").forEach(function (a) { a.tabIndex = -1; });
+      track.appendChild(copy);
+    });
+    track.style.setProperty("--duration", (cards.length * 2 * 9) + "s");  // about 9 seconds per card
   })();
 
   document.getElementById("year").textContent = new Date().getFullYear();

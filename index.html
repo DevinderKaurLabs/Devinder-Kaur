@@ -233,16 +233,16 @@
   .work { background: transparent; padding-top: 24px; }
   /* Selected work: one row that drifts right to left, and stops on hover */
   .work-marquee {
-    margin-top: 40px; overflow: hidden;
+    margin-top: 40px;
     width: 100vw; margin-left: calc(50% - 50vw);   /* full width, no side margins */
+    overflow-x: auto; overflow-y: hidden;
+    scrollbar-width: none; -ms-overflow-style: none;
+    overscroll-behavior-x: contain; scroll-behavior: auto;
   }
+  .work-marquee::-webkit-scrollbar { display: none; }
   .project-grid {
     display: flex; gap: 28px; width: max-content; align-items: stretch; padding: 4px 2px 8px;
-    animation: workscroll var(--duration, 120s) linear infinite;
   }
-  .work-marquee:hover .project-grid,
-  .work-marquee:focus-within .project-grid { animation-play-state: paused; }
-  @keyframes workscroll { to { transform: translateX(calc(-50% - 14px)); } }
   .project {
     width: 430px; flex: none;
     display: flex; flex-direction: column;
@@ -841,19 +841,49 @@ const EXPERIENCE = [
     document.getElementById("posts").hidden = false;
   })();
 
-  // Selected work: clone the cards once so the row can loop without a gap.
+  // Selected work: a row that drifts right to left on its own, pauses under the
+  // cursor, and can be swiped or scrolled by hand at any speed.
   (function () {
+    const view = document.getElementById("workMarquee");
     const track = document.getElementById("projectTrack");
-    if (!track) return;
+    if (!view || !track) return;
     const cards = Array.prototype.slice.call(track.children);
     if (!cards.length) return;
+
+    // A second copy of every card, so the row can wrap around with no gap.
     cards.forEach(function (card) {
       const copy = card.cloneNode(true);
       copy.setAttribute("aria-hidden", "true");
       copy.querySelectorAll("a").forEach(function (a) { a.tabIndex = -1; });
       track.appendChild(copy);
     });
-    track.style.setProperty("--duration", (cards.length * 2 * 9) + "s");  // about 9 seconds per card
+
+    const SPEED = 0.85;          // pixels per frame; raise for a faster drift
+    let paused = false, nudge = 0;
+
+    view.addEventListener("mouseenter", function () { paused = true; });
+    view.addEventListener("mouseleave", function () { paused = false; });
+    view.addEventListener("focusin", function () { paused = true; });
+    view.addEventListener("focusout", function () { paused = false; });
+    // A swipe or scroll takes over; the drift picks up again a moment later.
+    ["wheel", "touchstart", "pointerdown"].forEach(function (evt) {
+      view.addEventListener(evt, function () { nudge = 90; }, { passive: true });
+    });
+
+    function half() { return track.scrollWidth / 2; }
+
+    function frame() {
+      const h = half();
+      if (h > 0) {
+        if (nudge > 0) { nudge--; }
+        else if (!paused) { view.scrollLeft += SPEED; }
+        if (view.scrollLeft >= h) view.scrollLeft -= h;        // wrap forward
+        else if (view.scrollLeft <= 0) view.scrollLeft += h;   // wrap backward
+      }
+      requestAnimationFrame(frame);
+    }
+    view.scrollLeft = 1;
+    requestAnimationFrame(frame);
   })();
 
   document.getElementById("year").textContent = new Date().getFullYear();

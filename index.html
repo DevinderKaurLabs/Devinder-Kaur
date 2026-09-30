@@ -432,6 +432,26 @@
       <div class="project-grid">
       <article class="project">
         <div>
+          <h3>Churn Predictor and Retention Strategy</h3>
+          <p class="project-summary">Flags the customers most likely to leave and turns each prediction into a retention action a marketing team can run this week.</p>
+          <ul class="tags"><li>Python</li><li>scikit-learn</li><li>Streamlit</li><li>Churn</li></ul>
+        </div>
+        <div>
+          <dl>
+            <dt>What I built</dt>
+            <dd>A churn model plus a retention layer, wrapped in a Streamlit app: score the customer base, see who is at risk, and get the treatment that fits each risk band.</dd>
+            <dt>How it's framed</dt>
+            <dd>The model ranks risk; the retention plan pairs each band with an offer and a channel, so the output is a plan rather than a score.</dd>
+          </dl>
+          <div class="project-links link-group">
+            <a class="text-link" data-link="churnLive">Open the Streamlit app</a>
+            <a class="text-link" data-link="churnCode">View code on GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project">
+        <div>
           <h3>GA4 Marketing Automation</h3>
           <p class="project-summary">Turns raw GA4 and campaign data into a weekly marketing report and the actions that follow it, without anyone opening a dashboard.</p>
           <ul class="tags"><li>GA4</li><li>BigQuery</li><li>Python</li><li>n8n</li></ul>
@@ -690,6 +710,8 @@ const LINKS = {
   competitorArticle:   "",
   sentimentCode:       "https://github.com/BetterThanBusy/Sentiment-Analysis",
   sentimentArticle:    "",
+  churnLive:        "https://churn-predictor-marketingstrategy.streamlit.app",
+  churnCode:        "",
   ga4Code:          "",
   ga4Live:          "",
   cardAgentLive:    "https://uae-credit-card-intelligence.onrender.com",
